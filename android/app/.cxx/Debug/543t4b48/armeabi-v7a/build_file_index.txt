@@ -1,0 +1,2 @@
+/Users/zacharygrimaldi/prof/my_rn_instacart/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt
+/Users/zacharygrimaldi/prof/my_rn_instacart/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt
