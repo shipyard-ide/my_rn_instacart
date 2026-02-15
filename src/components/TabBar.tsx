@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCart } from '../context/CartContext';
 
@@ -20,14 +20,36 @@ interface TabItemProps {
 }
 
 function TabItem({ label, emoji, isActive, badge, onPress }: TabItemProps) {
+  const bounceAnim = useRef(new Animated.Value(1)).current;
+  const prevBadge = useRef(badge);
+
+  useEffect(() => {
+    if (badge !== undefined && badge > 0 && prevBadge.current !== undefined && badge > prevBadge.current) {
+      Animated.sequence([
+        Animated.timing(bounceAnim, {
+          toValue: 1.4,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+        Animated.spring(bounceAnim, {
+          toValue: 1,
+          friction: 3,
+          tension: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+    prevBadge.current = badge;
+  }, [badge, bounceAnim]);
+
   return (
     <TouchableOpacity style={styles.tab} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.tabIconContainer}>
         <Text style={[styles.tabEmoji, isActive && styles.tabEmojiActive]}>{emoji}</Text>
         {badge !== undefined && badge > 0 && (
-          <View style={styles.badge}>
+          <Animated.View style={[styles.badge, { transform: [{ scale: bounceAnim }] }]}>
             <Text style={styles.badgeText}>{badge > 99 ? '99+' : badge}</Text>
-          </View>
+          </Animated.View>
         )}
       </View>
       <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>{label}</Text>
